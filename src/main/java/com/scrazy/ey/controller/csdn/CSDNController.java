@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.scrazy.ey.crawler.pageprocessor.csdn.CsdnColumnPageProcessor;
 import com.scrazy.ey.crawler.pageprocessor.csdn.CsdnProcessor;
 import com.scrazy.ey.crawler.pipeline.CsdnColumnPagePipeline;
@@ -36,17 +38,20 @@ public class CSDNController {
 	@RequestMapping(value = "/AllColumn")
 	@ResponseBody
 	public Object getJson() {
-
+		PageHelper.startPage(1, 20);
 		List<CsdnColumnCategory> list = csdnService.findAll();
 		System.out.println(list.size());
 		for (CsdnColumnCategory csdnColumnCategory : list) {
 			System.out.println(csdnColumnCategory.toString());
 		}
+		PageInfo<CsdnColumnCategory> p=new PageInfo<CsdnColumnCategory>(list);
+		System.out.println(p.getList());
 		return list;
 	}
 
 	@RequestMapping(value = "/StartCrawler")
 	public String StartCrawler() {
+		
 		List<CsdnColumnCategory> list = csdnService.findAll();
 		List<String>strlist = new ArrayList<>();
 		for (CsdnColumnCategory col : list) {
